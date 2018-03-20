@@ -427,15 +427,17 @@ private:
   int core; // 芯の長さ
 public:
   Pen() { core = 0; }
+  Pen(int _core) { core = _core; }
   void write() { if (core > 0) core--; }
 };
-
 // 消しゴム付きペン
 class ErasePen : public Pen {
 private:
   int eraser; // 消しゴムの長さ
 public:
-  void erase() { if (eraser > 0) ereaser--; }
+  ErasePen() { eraser = 0; }
+  ErasePen(int _eraser) { eraser = _eraser; }
+  void erase() { if (eraser > 0) eraser--; }
 };
 
 int main() {
@@ -449,20 +451,22 @@ int main() {
 
 - 引き継ぎ元になる`class`を基底クラス(ここでは`Pen`)
 - 引き継いで新しく作った`class`を派生クラス(ここでは`ErasePen`)
-- 継承は2種類ある
+- 継承は3種類ある
   - `class 派生クラス名 : public 基底クラス名 {};`
-    - 基底クラスのメンバ全てを引き継ぐ
   - `class 派生クラス名 : private 基底クラス名 {};`
-    - `public`, `protected`メンバのみ引き継ぐ
+  - `class 派生クラス名 : protected 基底クラス名 {}`
+  - 違いはあるがここでは説明しない
 
 ---
 
 ```cpp
 // 消すたびに芯が伸びるすごいペン
-class SugoiPen : Pen {
+class SugoiPen : public Pen {
 private:
   int eraser; // 消しゴムの長さ
 public:
+  SugoiPen() { eraser = 0; }
+  SugoiPen(int _eraser) { eraser = _eraser; }
   void erase() {
     if (eraser > 0) eraser--;
     core++;
@@ -492,6 +496,7 @@ protected:
   int core; // 芯の長さ
 public:
   Pen() { core = 0; }
+  Pen(int _core) { core = _core; }
   void write() { if (core > 0) core--; }
 };
 ```
@@ -637,3 +642,38 @@ int main() {
 - 関数テンプレートと同じように`class`の定義の前に
   `template<テンプレート引数>`をつける
 - 実際にその`class`を使うときは`Point<int> p`のように`<>`の中に型名を入れて使う
+
+---
+
+## range based for(>= C++11)
+
+---
+
+## range based for(>= C++11)
+
+``` cpp
+int main() {
+  vector<int> v;
+  for (int a : v) {
+    cout << a << endl;
+  }
+  // これと同じ
+  for (int i = 0; i < v.size(); ++i) {
+    int a = v[i];
+    cout << a << endl;
+  }
+  for (int &a : v) {
+    cin >> a;
+  }
+  // これと同じ
+  for (int i = 0; i < v.size(); ++i) {
+    int &a = v[i];
+    cin >> a;
+  }
+}
+```
+
+---
+
+- 多言語の`foreach`のような動きをする
+- `vector`だけでなく`map`や`set`などでも使える
